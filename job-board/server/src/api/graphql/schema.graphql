@@ -1,0 +1,36 @@
+type Query {
+  """
+  Get a job by id
+  """
+  job(id: ID!): Job
+  """
+  Get a company by id
+  """
+  company(id: ID!): Company
+  # Specify that array cannot be null and array elements cannot be null
+  """
+  Published Jobs on Job Board
+  """
+  jobs: [Job!]!
+}
+
+type Job {
+  # Specify that id cannot be null
+  id: ID!
+  # Specify that title cannot be null
+  title: String!
+  # GraphQL scalar type does not have Date type, so we use String - https://graphql.org/learn/schema/#scalar-types
+  """
+  Date when job was published in ISO 8601 format
+  """
+  date: String!
+  description: String
+  company: Company!
+}
+
+type Company {
+  id: ID!
+  name: String!
+  description: String
+  jobs: [Job!]!
+}
