@@ -38,7 +38,7 @@ export const createJob = async ({
 }: {
   companyId: string
   title: string
-  description: string
+  description: string | null
 }): Promise<Job> => {
   const job = {
     id: generateId(),
@@ -51,11 +51,8 @@ export const createJob = async ({
   return job
 }
 
-export const deleteJob = async (
-  id: string,
-  companyId: string
-): Promise<Job | null> => {
-  const job = await getJobTable().first().where({ id, companyId })
+export const deleteJob = async (id: string): Promise<Job | null> => {
+  const job = await getJobTable().first().where({ id })
   if (!job) {
     return null
   }
@@ -65,16 +62,14 @@ export const deleteJob = async (
 
 export const updateJob = async ({
   id,
-  companyId,
   title,
   description,
 }: {
   id: string
-  companyId: string
   title: string
-  description: string
+  description: string | null
 }): Promise<Job | null> => {
-  const job = await getJobTable().first().where({ id, companyId })
+  const job = await getJobTable().first().where({ id })
   if (!job) {
     return null
   }
