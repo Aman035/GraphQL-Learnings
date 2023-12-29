@@ -53,7 +53,7 @@
     Job: {
       // Overriding default resolver for date field
       title: async (job: Job) => job.title + '!!!',
-      // Creating resolver date field resolver
+      // Creating resolver for date field
       date: async (job: Job) => toIsoDate(job.createdAt),
     },
   }
