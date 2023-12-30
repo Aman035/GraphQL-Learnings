@@ -24,6 +24,40 @@
     jobs: [Job!]!
   }
   ```
+  
+#### **Passing Arguments in GraphQL Queries**
+- GraphQL allows passing static and dynamic arguments
+  ```graphql
+  # STATIC
+  query {
+    job(id: "1") {
+      name
+    }
+  }
+
+
+  # DYNAMIC
+  query GetJob($id: ID!) {
+    hero(id: $id) {
+      name
+    }
+  }
+  
+  # Note: Input Variables need to be passed to this dynamic query
+  ```
+
+#### **Alias In GraphQL**
+- Aliases can be used in GraphQL queries to rename results. This is useful when u request multiple results of same name in the same query
+  ```graphql
+  {
+    job1: job(id: 1) {
+      name
+    }
+    job2: hero(id: 2) {
+      name
+    }
+  }
+  ```
 
 #### **GraphQL Types**
 
