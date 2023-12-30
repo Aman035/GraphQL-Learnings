@@ -38,7 +38,7 @@
 
   # DYNAMIC
   query GetJob($id: ID!) {
-    hero(id: $id) {
+    job(id: $id) {
       name
     }
   }
@@ -53,7 +53,7 @@
     job1: job(id: 1) {
       name
     }
-    job2: hero(id: 2) {
+    job2: job(id: 2) {
       name
     }
   }
