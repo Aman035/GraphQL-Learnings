@@ -12,7 +12,7 @@ export function getAccessToken() {
 }
 
 export async function login(email, password) {
-  const response = await fetch(`${API_URL}/login`, {
+  const response = await fetch(`${API_URL}/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
