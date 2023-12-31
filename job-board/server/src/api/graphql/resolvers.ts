@@ -51,13 +51,36 @@ export const resolvers = {
       _root: any,
       {
         input: { id, title, description },
-      }: { input: { id: string; title: string; description: string | null } }
+      }: { input: { id: string; title: string; description: string | null } },
+      { user }: { user?: User }
     ) => {
-      const job = await updateJob({ id, title, description })
+      if (!user) {
+        unAuthorizedError('Missing authentication')
+      }
+
+      const job = await updateJob({
+        id,
+        title,
+        description,
+        companyId: user?.companyId as string,
+      })
+      if (!job) {
+        notFoundError(`No job found with id: ${id}`)
+      }
       return job
     },
-    deleteJob: async (_root: any, { id }: { id: string }) => {
-      const job = await deleteJob(id)
+    deleteJob: async (
+      _root: any,
+      { id }: { id: string },
+      { user }: { user?: User }
+    ) => {
+      if (!user) {
+        unAuthorizedError('Missing authentication')
+      }
+      const job = await deleteJob(id, user?.companyId as string)
+      if (!job) {
+        notFoundError(`No job found with id: ${id}`)
+      }
       return job
     },
   },

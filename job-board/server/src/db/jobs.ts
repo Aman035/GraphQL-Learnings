@@ -51,8 +51,14 @@ export const createJob = async ({
   return job
 }
 
-export const deleteJob = async (id: string): Promise<Job | null> => {
-  const job = await getJobTable().first().where({ id })
+/**
+ * @dev - companyId is passed to ensure that only the company that created the job can delete it
+ */
+export const deleteJob = async (
+  id: string,
+  companyId: string
+): Promise<Job | null> => {
+  const job = await getJobTable().first().where({ id, companyId })
   if (!job) {
     return null
   }
@@ -60,16 +66,21 @@ export const deleteJob = async (id: string): Promise<Job | null> => {
   return job
 }
 
+/**
+ * @dev - companyId is passed to ensure that only the company that created the job can update it
+ */
 export const updateJob = async ({
   id,
   title,
   description,
+  companyId,
 }: {
   id: string
   title: string
   description: string | null
+  companyId: string
 }): Promise<Job | null> => {
-  const job = await getJobTable().first().where({ id })
+  const job = await getJobTable().first().where({ id, companyId })
   if (!job) {
     return null
   }
