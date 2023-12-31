@@ -3,9 +3,10 @@ import cors from 'cors'
 import routes from '../api'
 import { config } from '../config'
 import helmet from 'helmet'
-import { apolloLoader } from './apolloServer'
 import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServer } from '@apollo/server'
+import { authMiddleware } from '../api/middlewares/authMiddleware'
+import { getUser } from '../db/users'
 
 export const expressLoader = (
   app: Application,
@@ -54,11 +55,30 @@ export const expressLoader = (
   /* Middleware that transforms the raw string of req.body into json */
   app.use(express.json())
 
+  /* Middleware that validates JWT Token and assigns jwt payload data to req.auth param */
+  /**@notice - Custom Middleware */
+  app.use(authMiddleware)
+
   /* Load API routes */
   app.use(config.api.prefix, routes())
 
-  /* Apply Middleware to graphQl Route */
-  app.use('/graphql', expressMiddleware(apolloServer))
+  /**
+   * Apply Middleware to graphQl Route
+   * Context is passed to the graphql resolvers ( used to pass any custom data to resolvers )
+   * @notice - This context is passed to the resolvers so that access to graphql mutations can be set to only authenticated users
+   */
+  app.use(
+    '/graphql',
+    expressMiddleware(apolloServer, {
+      context: async ({ req }): Promise<any> => {
+        if ((req as any).auth) {
+          const user = await getUser((req as any).auth.sub)
+          return { user }
+        }
+        return {}
+      },
+    })
+  )
 
   /**
    * Handling 404 routes

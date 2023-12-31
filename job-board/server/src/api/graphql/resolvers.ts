@@ -8,7 +8,7 @@ import {
   getJobsByCompany,
   updateJob,
 } from '../../db/jobs'
-import { Company, Job } from '../../types'
+import { Company, Job, User } from '../../types'
 
 export const resolvers = {
   Query: {
@@ -33,11 +33,18 @@ export const resolvers = {
       _root: any,
       {
         input: { title, description },
-      }: { input: { title: string; description: string | null } }
+      }: { input: { title: string; description: string | null } },
+      // Context
+      { user }: { user?: User }
     ) => {
-      /** @todo : Change this after authentication */
-      const companyId = 'FjcJCHJALA4i'
-      const job = createJob({ companyId, title, description })
+      if (!user) {
+        unAuthorizedError('Missing authentication')
+      }
+      const job = createJob({
+        companyId: user?.companyId as string,
+        title,
+        description,
+      })
       return job
     },
     updateJob: async (
@@ -74,5 +81,11 @@ const toIsoDate = (value: string) => {
 const notFoundError = (message: string) => {
   throw new GraphQLError(message, {
     extensions: { code: 'NOT_FOUND' },
+  })
+}
+
+const unAuthorizedError = (message: string) => {
+  throw new GraphQLError(message, {
+    extensions: { code: 'UNAUTHORIZED' },
   })
 }
