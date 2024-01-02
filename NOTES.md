@@ -172,6 +172,7 @@
 - Most simple approach is to use `fetch` or `axios` to make the post request. Although this does not offer any validation checks, caching etc and is not recommended.
 - `graphql-request` is a good library for making graphql requests on client side. This library is minimal but does not include inbuilt caching.
 - `Apollo Client` is a more advanced library for making graphql requests on client side. This library is feature rich and includes inbuilt caching, validation etc. Refer to `job-board-client` project for an example. ( It shows queries, mutation, setting client with auth headers, cache-management, cache manipulation and different fetch policies )
+- Note for Apollo Client caching - Automatic caching is done for queries but not for mutations. To cache mutations, use `update` function in the mutation options. ( Refer to `job-board-client` project for an example )
 
 #### **GraphQL Fragments**
 
