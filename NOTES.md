@@ -104,7 +104,7 @@
 
 - GraphQL has built in error handling. If a field is not found or a null value in found for a non-nullable, it will return an error message with the field name.
 - [Build In Errors Codes In GraphQL](https://www.apollographql.com/docs/apollo-server/data/errors/#built-in-error-codes)
-- [Custom Errors can be thrown in GraphQL resolvers.](https://www.apollographql.com/docs/apollo-server/data/errors/#custom-errors)
+- [Custom Errors can be thrown in GraphQL resolvers](https://www.apollographql.com/docs/apollo-server/data/errors/#custom-errors)
 
 #### **Recursive Queries**
 
@@ -165,3 +165,14 @@
 
 - Context ( Any Custom Information ) can be passed to GraphQL resolvers to share data between resolvers.
 - In `job-board` project, the `context` is used to pass the user authentication details to the resolvers.
+
+#### **Using GraphQL On Client Side**
+
+- Mostly all the graphql queries are just post queries with body containing the query and variables.
+- Most simple approach is to use `fetch` or `axios` to make the post request. Although this does not offer any validation checks, caching etc and is not recommended.
+- `graphql-request` is a good library for making graphql requests on client side. This library is minimal but does not include inbuilt caching.
+- `Apollo Client` is a more advanced library for making graphql requests on client side. This library is feature rich and includes inbuilt caching, validation etc. Refer to `job-board-client` project for an example. ( It shows queries, mutation, setting client with auth headers, cache-management, cache manipulation and different fetch policies )
+
+#### **GraphQL Fragments**
+
+- Fragments are used to reuse parts of a query. They are useful when the same fields are used in multiple queries.

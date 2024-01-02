@@ -1,6 +1,5 @@
-import { GraphQLClient, gql } from 'graphql-request'
-
-const client = new GraphQLClient('http://localhost:3000/graphql')
+import { gql } from '@apollo/client'
+import { client } from './client'
 
 export const getJobs = async () => {
   const query = gql`
@@ -16,29 +15,44 @@ export const getJobs = async () => {
       }
     }
   `
-  const { jobs } = await client.request(query)
-  return jobs
+  /**
+   * By default, Apollo Client will cache the results of queries in memory.
+   * Using this fetchPolicy, we are forcing the query to be made to the server
+   */
+  const { data } = await client.query({ query, fetchPolicy: 'network-only' })
+  return data.jobs
 }
 
+export const jobDetail = gql`
+  fragment JobFragment on Job {
+    id
+    title
+    date
+    description
+    company {
+      id
+      name
+    }
+  }
+`
 /**
  * GraphQL query with args
  */
-export const getJob = async (id) => {
-  const query = gql`
-    query JobById($id: ID!) {
-      job(id: $id) {
-        title
-        date
-        description
-        company {
-          id
-          name
-        }
-      }
+export const getJobById = gql`
+  query JobById($id: ID!) {
+    job(id: $id) {
+      ...JobFragment
     }
-  `
-  const { job } = await client.request(query, { id })
-  return job
+  }
+  ${jobDetail}
+`
+
+export const getJob = async (id) => {
+  const { data } = await client.query({
+    query: getJobById,
+    variables: { id },
+  })
+  return data.job
 }
 
 export const getCompany = async (id) => {
@@ -55,6 +69,6 @@ export const getCompany = async (id) => {
       }
     }
   `
-  const { company } = await client.request(query, { id })
-  return company
+  const { data } = await client.query({ query, variables: { id } })
+  return data.company
 }
