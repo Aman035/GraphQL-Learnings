@@ -1,16 +1,8 @@
 import JobList from '../components/JobList'
-import { getJobs } from '../graphql/queries'
-import { useEffect, useState } from 'react'
+import { useGetJobs } from '../graphql/hooks'
 
 function HomePage() {
-  const [jobs, setJobs] = useState([])
-
-  useEffect(() => {
-    getJobs().then((jobs) => {
-      setJobs(jobs)
-    })
-  }, [])
-
+  const { jobs } = useGetJobs()
   return (
     <div>
       <h1 className="title">Job Board</h1>
