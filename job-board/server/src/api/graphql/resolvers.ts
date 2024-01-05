@@ -9,6 +9,7 @@ import {
   updateJob,
 } from '../../db/jobs'
 import { Company, Job, User } from '../../types'
+import DataLoader from 'dataloader'
 
 export const resolvers = {
   Query: {
@@ -90,7 +91,11 @@ export const resolvers = {
    */
   Job: {
     date: async (job: Job) => toIsoDate(job.createdAt),
-    company: async (job: Job) => getCompany(job.companyId),
+    company: async (
+      job: Job,
+      args: any,
+      { companyLoader }: { companyLoader: DataLoader<string, any, string> }
+    ) => await companyLoader.load(job.companyId),
   },
   Company: {
     jobs: async (company: Company) => getJobsByCompany(company.id),

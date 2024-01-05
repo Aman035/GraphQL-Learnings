@@ -7,6 +7,9 @@ import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServer } from '@apollo/server'
 import { authMiddleware } from '../api/middlewares/authMiddleware'
 import { getUser } from '../db/users'
+import { createCompanyLoader } from '../db/companies'
+import DataLoader from 'dataloader'
+import { User } from '../types'
 
 export const expressLoader = (
   app: Application,
@@ -71,11 +74,19 @@ export const expressLoader = (
     '/graphql',
     expressMiddleware(apolloServer, {
       context: async ({ req }): Promise<any> => {
+        /**
+         * Create Data Loader for Company
+         * @dev - CompanyLoader is created now for each graphql request, to avoid global caching of the data loader
+         */
+        const companyLoader = await createCompanyLoader()
+        const context: {
+          companyLoader: DataLoader<string, any, string>
+          user?: User
+        } = { companyLoader }
         if ((req as any).auth) {
-          const user = await getUser((req as any).auth.sub)
-          return { user }
+          context.user = await getUser((req as any).auth.sub)
         }
-        return {}
+        return context
       },
     })
   )
