@@ -182,9 +182,46 @@
 
 - Fragments are used to reuse parts of a query. They are useful when the same fields are used in multiple queries.
 
-### **Backend Optimisations**
+#### **Backend Optimisations**
 
 - For every job, the company details are fetched from the database. Therefore for every N jobs, N+1 queries are executed. Batching the company details query will reduce the number of queries to 2. DataLoader is used for batching in `job-board` project.
 - In initial implementation, we created a global instance of DataLoader and used it in all resolvers. Due to this data was globally cached.
 - Either one should clear the cache after every update fn on db or create a new instance of DataLoader for every request [ PER REQ CACHE ] . ( `job-board` project uses the second approach )
 - One could argue that having a global dataLoader with cache disabled would be better, but in case where we have multiple duplicate ids in a single query, the db will be hit multiple times, whereas PER REQ CACHE will hit the db only once.
+
+#### **Difference Btw Query and Mutation Operations**
+- Query operation is used for querying data from server, whereas mutation is used for Create, update, delete data on server.
+- Although query seems to be Read call, Graphql used as POST API for both of these.
+- While query fields are executed in parallel, mutation fields run in series, one after the other.
+  ```graphql
+
+  # getUser and getPosts execute in parallel
+  
+  query {
+    getUser(id: "123") {
+      id
+      name
+    }
+    getPosts {
+      id
+      title
+    }
+  }
+  ```
+
+  ```graphql
+
+  # createUser is executed 1st and then updatePost
+  
+  mutation {
+    createUser(name: "Alice") {
+      id
+      name
+    }
+    updatePost(id: "456", title: "Updated Title") {
+      id
+      title
+    }
+  }
+  ```
+#### [**Cursor vs Offset Pagination**](https://betterprogramming.pub/understanding-the-offset-and-cursor-pagination-8ddc54d10d98)
