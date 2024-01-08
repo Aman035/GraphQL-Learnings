@@ -1,6 +1,7 @@
 import { GraphQLError } from 'graphql'
 import { getCompany } from '../../db/companies'
 import {
+  countJobs,
   createJob,
   deleteJob,
   getJob,
@@ -27,7 +28,21 @@ export const resolvers = {
       }
       return company
     },
-    jobs: async () => await getJobs(10, 0),
+    jobs: async (
+      _root: any,
+      { page, limit }: { page: number; limit: number }
+    ) => {
+      const MAX_LIMIT = 50
+      if (limit > MAX_LIMIT) {
+        badRequestError(`limit must be less than ${MAX_LIMIT}`)
+      }
+      const items = await getJobs(limit, page)
+      const totalCount = await countJobs()
+      return {
+        items,
+        totalCount,
+      }
+    },
   },
   Mutation: {
     createJob: async (
@@ -115,5 +130,11 @@ const notFoundError = (message: string) => {
 const unAuthorizedError = (message: string) => {
   throw new GraphQLError(message, {
     extensions: { code: 'UNAUTHORIZED' },
+  })
+}
+
+const badRequestError = (message: string) => {
+  throw new GraphQLError(message, {
+    extensions: { code: 'BAD_REQUEST' },
   })
 }

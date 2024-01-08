@@ -11,7 +11,7 @@ type Query {
   """
   Published Jobs on Job Board
   """
-  jobs: [Job!]!
+  jobs(page: Int = 1, limit: Int = 10): Joblist
 }
 
 type Mutation {
@@ -41,6 +41,11 @@ type Job {
   date: String!
   description: String
   company: Company!
+}
+
+type Joblist {
+  items: [Job!]!
+  totalCount: Int!
 }
 
 type Company {

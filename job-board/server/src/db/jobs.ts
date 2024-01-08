@@ -9,18 +9,13 @@ export const countJobs = async (): Promise<number> => {
   return count
 }
 
-export const getJobs = async (
-  limit: number,
-  offset: number
-): Promise<Job[]> => {
-  const query = getJobTable().select().orderBy('createdAt', 'desc')
-  if (limit) {
-    query.limit(limit)
-  }
-  if (offset) {
-    query.offset(offset)
-  }
-  return await query
+export const getJobs = async (limit: number, page: number): Promise<Job[]> => {
+  const offset = limit * (page - 1)
+  return await getJobTable()
+    .select()
+    .orderBy('createdAt', 'desc')
+    .limit(limit)
+    .offset(offset)
 }
 
 export const getJobsByCompany = async (companyId: string): Promise<Job[]> => {

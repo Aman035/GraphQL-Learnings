@@ -2,15 +2,18 @@ import { gql } from '@apollo/client'
 import { jobDetail } from './fragments'
 
 export const getJobsQuery = gql`
-  {
-    jobs {
-      id
-      title
-      date
-      company {
+  query getJobs($page: Int = 1, $limit: Int = 10) {
+    jobs(page: $page, limit: $limit) {
+      items {
         id
-        name
+        title
+        date
+        company {
+          id
+          name
+        }
       }
+      totalCount
     }
   }
 `

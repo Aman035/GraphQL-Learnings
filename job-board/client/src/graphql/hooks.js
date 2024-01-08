@@ -7,11 +7,16 @@ import { getJobByIdQuery, getJobsQuery, getCompanyByIdQuery } from './queries'
  * Note - React hoooks name should always start with use
  */
 
-export const useGetJobs = () => {
+export const useGetJobs = (page, limit) => {
   const { data, loading, error } = useQuery(getJobsQuery, {
     fetchPolicy: 'network-only',
+    variables: { page, limit },
   })
-  return { jobs: data ? data.jobs : [], loading, error }
+  return {
+    jobs: data?.jobs,
+    loading,
+    error,
+  }
 }
 
 export const useGetJob = (id) => {
