@@ -5,19 +5,17 @@ import { connection } from '../db/connection'
  * @notice - This script will drop the database if it already exists.
  */
 const createDB = async () => {
-  const { schema } = connection
+  await connection.schema.dropTableIfExists('user')
+  await connection.schema.dropTableIfExists('job')
+  await connection.schema.dropTableIfExists('company')
 
-  await schema.dropTableIfExists('user')
-  await schema.dropTableIfExists('job')
-  await schema.dropTableIfExists('company')
-
-  await schema.createTable('company', (table) => {
+  await connection.schema.createTable('company', (table) => {
     table.text('id').notNullable().primary()
     table.text('name').notNullable()
     table.text('description')
   })
 
-  await schema.createTable('job', (table) => {
+  await connection.schema.createTable('job', (table) => {
     table.text('id').notNullable().primary()
     table.text('companyId').notNullable().references('id').inTable('company')
     table.text('title').notNullable()
@@ -25,7 +23,7 @@ const createDB = async () => {
     table.text('createdAt').notNullable()
   })
 
-  await schema.createTable('user', (table) => {
+  await connection.schema.createTable('user', (table) => {
     table.text('id').notNullable().primary()
     table.text('companyId').notNullable().references('id').inTable('company')
     table.text('email').notNullable().unique()
