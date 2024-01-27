@@ -1,0 +1,26 @@
+import { useAddMessage, useMessages } from '../lib/graphql/hooks'
+import { MessageInput } from './MessageInput'
+import { MessageList } from './MessageList'
+
+interface ChatProps {
+  user: string
+}
+
+export const Chat: React.FC<ChatProps> = ({ user }) => {
+  const { messages } = useMessages()
+  const { addMessage } = useAddMessage()
+
+  const handleSend = async (text: string): Promise<void> => {
+    await addMessage(text)
+  }
+
+  return (
+    <section className="section">
+      <div className="container">
+        <h1 className="title is-4">{`Chatting as ${user}`}</h1>
+        <MessageList user={user} messages={messages} />
+        <MessageInput onSend={handleSend} />
+      </div>
+    </section>
+  )
+}
