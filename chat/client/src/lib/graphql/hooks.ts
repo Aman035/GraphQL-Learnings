@@ -1,5 +1,9 @@
-import { useMutation, useQuery } from '@apollo/client'
-import { addMessageMutation, messagesQuery } from './queries'
+import { useMutation, useQuery, useSubscription } from '@apollo/client'
+import {
+  addMessageMutation,
+  messageAddedSubscription,
+  messagesQuery,
+} from './queries'
 import { Message } from '../../types'
 
 export const useAddMessage = (): {
@@ -12,21 +16,25 @@ export const useAddMessage = (): {
       data: { message },
     } = await mutate({
       variables: { text },
-      // Update the cache with the new message
-      update(cache, { data: { message } }) {
-        cache.updateQuery({ query: messagesQuery }, ({ messages }) => {
-          return { messages: [...messages, message] }
-        })
-      },
     })
     return message
   }
-
   return { addMessage }
 }
 
 export const useMessages = (): { messages: Message[] } => {
   const { data } = useQuery(messagesQuery)
+
+  /**
+   * Subscribe to the messageAdded subscription and update the cache when a new message is received.
+   */
+  useSubscription(messageAddedSubscription, {
+    onData: ({ client, data }) => {
+      client.cache.updateQuery({ query: messagesQuery }, ({ messages }) => {
+        return { messages: [...messages, data.data.message] }
+      })
+    },
+  })
   return {
     messages: data?.messages ?? [],
   }

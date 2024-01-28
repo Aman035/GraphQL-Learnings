@@ -33,7 +33,15 @@ export const resolvers = {
   },
   Subscription: {
     messageAdded: {
-      subscribe: () => pubsub.asyncIterator([TRIGGERS.MESSAGE_ADDED]),
+      /**
+       * @notice - The context for subscriptions need to be attached over ws.
+       */
+      subscribe: (_root: any, args: any, { user }: { user?: string }) => {
+        if (!user) {
+          unAuthorizedError('You must be logged in.')
+        }
+        return pubsub.asyncIterator([TRIGGERS.MESSAGE_ADDED])
+      },
     },
   },
 }

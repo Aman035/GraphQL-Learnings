@@ -20,3 +20,14 @@ export const addMessageMutation = gql`
     }
   }
 `
+
+export const messageAddedSubscription = gql`
+  subscription MessageAddedSubscription {
+    # Alias messageAdded to message
+    message: messageAdded {
+      id
+      user
+      text
+    }
+  }
+`

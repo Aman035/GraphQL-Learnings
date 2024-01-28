@@ -3,6 +3,14 @@ import { config } from '../config'
 import jwt from 'jsonwebtoken'
 import { getUser } from '../db/users'
 
+export const decodeToken = (token: string) => {
+  try {
+    return jwt.verify(token, config.jwtSecret)
+  } catch (err) {
+    return null
+  }
+}
+
 export const handleLogin = async (req: Request, res: Response) => {
   const { username, password } = req.body
   const user = await getUser(username)

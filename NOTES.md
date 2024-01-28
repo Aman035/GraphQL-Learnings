@@ -175,7 +175,8 @@
 
 #### **Using ApolloClient with React**
 
-- Apollo Client caching - Automatic caching is done for queries but not for mutations. To cache mutations, use `update` function in the mutation options. ( Refer to `job-board-client` project for an example )
+- Apollo Client caching - Automatic caching is done for queries but not for mutations. To cache mutations, use `update` function in the mutation options. ( Refer to `job-board-client` or `chat` project for an example )
+- For mutations, one can write or update the cache manually using `writeQuery` or `updateQuery` functions.
 - It also provides react hooks for queries and mutations. ( Refer to `job-board-client` project where `useQuery` and `useMutation` hooks are used in our custom react hooks)
 
 #### **GraphQL Fragments**
@@ -190,13 +191,14 @@
 - One could argue that having a global dataLoader with cache disabled would be better, but in case where we have multiple duplicate ids in a single query, the db will be hit multiple times, whereas PER REQ CACHE will hit the db only once.
 
 #### **Difference Btw Query and Mutation Operations**
+
 - Query operation is used for querying data from server, whereas mutation is used for Create, update, delete data on server.
 - Although query seems to be Read call, Graphql used as POST API for both of these.
 - While query fields are executed in parallel, mutation fields run in series, one after the other.
-  ```graphql
 
+  ```graphql
   # getUser and getPosts execute in parallel
-  
+
   query {
     getUser(id: "123") {
       id
@@ -210,9 +212,8 @@
   ```
 
   ```graphql
-
   # createUser is executed 1st and then updatePost
-  
+
   mutation {
     createUser(name: "Alice") {
       id
@@ -224,4 +225,14 @@
     }
   }
   ```
+
 #### [**Cursor vs Offset Pagination**](https://betterprogramming.pub/understanding-the-offset-and-cursor-pagination-8ddc54d10d98)
+
+#### **GraphQL Subscriptions**
+
+- GraphQL Subscriptions are used to subscribe to real time data from server. Generally this is done by using GraphQL over websockets.
+- For setting up graphql over websockets, just use any websocket lib such as `ws` or `socket.io` and attach graphql to it. ( Refer to `chat` project for an example )
+- Resolvers for subscriptions are a bit different from query and mutation. They return an [`AsyncIterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/AsyncIterator) instead of a promise. ( Refer to `chat` project for an example )
+- The PubSub class is used to publish and subscribe to events. ( Refer to `chat` project for an example ). Although it is not recommended to use this in production, since data is stored in memory and will be lost on server restart or issues when 1 has multiple servers. In such cases, one should use a pubsub service such as `Redis` or `AWS SNS` or `RabbitMQ` etc.
+- Context can be passed to subscriptions while setting up graphQL over ws ( Refer to `chat` project for an example )
+- [Using Subscriptions on Client Side with Apollo Client](https://www.apollographql.com/docs/react/data/subscriptions)
