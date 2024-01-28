@@ -1,5 +1,11 @@
 import { GraphQLError } from 'graphql'
 import { createMessage, getMessages } from '../../db/messages'
+import { PubSub } from 'graphql-subscriptions'
+
+const pubsub = new PubSub()
+const TRIGGERS = {
+  MESSAGE_ADDED: 'MESSAGE_ADDED',
+}
 
 export const resolvers = {
   Query: {
@@ -18,7 +24,16 @@ export const resolvers = {
     ) => {
       if (!user) {
         unAuthorizedError('You must be logged in.')
-      } else return await createMessage(user, text)
+      } else {
+        const message = await createMessage(user, text)
+        pubsub.publish(TRIGGERS.MESSAGE_ADDED, { messageAdded: message })
+        return message
+      }
+    },
+  },
+  Subscription: {
+    messageAdded: {
+      subscribe: () => pubsub.asyncIterator([TRIGGERS.MESSAGE_ADDED]),
     },
   },
 }
