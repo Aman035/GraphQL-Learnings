@@ -12,6 +12,12 @@ export const useAddMessage = (): {
       data: { message },
     } = await mutate({
       variables: { text },
+      // Update the cache with the new message
+      update(cache, { data: { message } }) {
+        cache.updateQuery({ query: messagesQuery }, ({ messages }) => {
+          return { messages: [...messages, message] }
+        })
+      },
     })
     return message
   }
