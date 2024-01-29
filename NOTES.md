@@ -244,3 +244,4 @@
 - This often requires some config to match db results to graphql types. ( Refer to `schema.yml` in job-board` project for an example )
 - This guide was used to setup TypeScript with GraphQL Code Generator - [Link](https://www.apollographql.com/docs/apollo-server/workflow/generate-types/)
 - Also its good practice to .gitignore the generated types and regenerate them on every build.
+- To make sure that the generated types are correct, one can use `graphql-codegen --config codegen.yml --watch` to watch for changes on dev server
