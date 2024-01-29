@@ -7,7 +7,7 @@ import { getJobByIdQuery, getJobsQuery, getCompanyByIdQuery } from './queries'
  * Note - React hoooks name should always start with use
  */
 
-export const useGetJobs = (page, limit) => {
+export const useGetJobs = (page: number, limit: number) => {
   const { data, loading, error } = useQuery(getJobsQuery, {
     fetchPolicy: 'network-only',
     variables: { page, limit },
@@ -19,14 +19,14 @@ export const useGetJobs = (page, limit) => {
   }
 }
 
-export const useGetJob = (id) => {
+export const useGetJob = (id: string | undefined) => {
   const { data, loading, error } = useQuery(getJobByIdQuery, {
     variables: { id },
   })
   return { job: data?.job, loading, error }
 }
 
-export const useGetCompany = (id) => {
+export const useGetCompany = (id: string | undefined) => {
   const { data, loading, error } = useQuery(getCompanyByIdQuery, {
     variables: { id },
   })
@@ -36,7 +36,7 @@ export const useGetCompany = (id) => {
 export const useCreateJob = () => {
   const [mutate, { loading }] = useMutation(createJobMutation)
 
-  const createJob = async (title, description) => {
+  const createJob = async (title: string, description: string) => {
     const { data } = await mutate({
       variables: { input: { title, description } },
       update: (cache, { data }) => {

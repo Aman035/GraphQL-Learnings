@@ -1,13 +1,18 @@
-import { Link } from 'react-router-dom';
-import { logout } from '../lib/auth';
+import { Link } from 'react-router-dom'
+import { logout } from '../lib/auth'
+import { UserEntity } from '../types'
 
-function NavBar({ user, onLogout }) {
+interface NavBarProps {
+  user: UserEntity | null
+  onLogout: () => void
+}
+const NavBar: React.FC<NavBarProps> = ({ user, onLogout }) => {
   const handleLogout = () => {
-    logout();
-    onLogout();
-  };
+    logout()
+    onLogout()
+  }
 
-  const loggedIn = Boolean(user);
+  const loggedIn = !!user
   return (
     <nav className="navbar">
       <div className="navbar-start">
@@ -17,13 +22,10 @@ function NavBar({ user, onLogout }) {
       </div>
       {loggedIn ? (
         <div className="navbar-end">
-          <span className="navbar-item has-text-grey">
-            {user.email}
-          </span>
+          <span className="navbar-item has-text-grey">{user.email}</span>
           <Link className="navbar-item" to="/jobs/new">
             Post Job
           </Link>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a className="navbar-item" onClick={handleLogout}>
             Logout
           </a>
@@ -36,7 +38,7 @@ function NavBar({ user, onLogout }) {
         </div>
       )}
     </nav>
-  );
+  )
 }
 
-export default NavBar;
+export default NavBar

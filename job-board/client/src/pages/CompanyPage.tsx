@@ -2,7 +2,7 @@ import { useParams } from 'react-router'
 import JobList from '../components/JobList'
 import { useGetCompany } from '../graphql/hooks'
 
-function CompanyPage() {
+const CompanyPage: React.FC = () => {
   const { companyId } = useParams()
   const { company, loading, error } = useGetCompany(companyId)
 

@@ -1,14 +1,14 @@
-import { useState } from 'react'
+import { SyntheticEvent, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useCreateJob } from '../graphql/hooks'
 
-function CreateJobPage() {
+const CreateJobPage: React.FC = () => {
   const navigate = useNavigate()
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const { createJob, loading } = useCreateJob()
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault()
     const job = await createJob(title, description)
     navigate(`/jobs/${job.id}`)

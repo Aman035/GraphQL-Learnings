@@ -3,9 +3,9 @@ import { useGetJobs } from '../graphql/hooks'
 import { useState } from 'react'
 import PaginationBar from '../components/PaginationBar'
 
-function HomePage() {
+const HomePage: React.FC = () => {
   const JOB_PER_PAGE_LIMIT = 10
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState<number>(1)
   const { jobs, loading, error } = useGetJobs(page, JOB_PER_PAGE_LIMIT)
   if (loading) {
     return <div>Loading...</div>

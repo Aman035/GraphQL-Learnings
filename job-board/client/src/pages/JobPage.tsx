@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { formatDate } from '../lib/formatters'
 import { useGetJob } from '../graphql/hooks'
 
-function JobPage() {
+const JobPage: React.FC = () => {
   const { jobId } = useParams()
   const { job, loading, error } = useGetJob(jobId)
 
