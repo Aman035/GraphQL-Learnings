@@ -1,15 +1,18 @@
 import { connection } from './connection'
 import { generateId } from './ids'
-import { Job } from '../types'
+import { JobEntity } from '../types'
 
-const getJobTable = () => connection.table('job')
+const getJobTable = () => connection.table<JobEntity>('job')
 
 export const countJobs = async (): Promise<number> => {
   const { count } = (await getJobTable().first().count('* as count')) as any
   return count
 }
 
-export const getJobs = async (limit: number, page: number): Promise<Job[]> => {
+export const getJobs = async (
+  limit: number,
+  page: number
+): Promise<JobEntity[]> => {
   const offset = limit * (page - 1)
   return await getJobTable()
     .select()
@@ -18,11 +21,13 @@ export const getJobs = async (limit: number, page: number): Promise<Job[]> => {
     .offset(offset)
 }
 
-export const getJobsByCompany = async (companyId: string): Promise<Job[]> => {
+export const getJobsByCompany = async (
+  companyId: string
+): Promise<JobEntity[]> => {
   return await getJobTable().select().where({ companyId })
 }
 
-export const getJob = async (id: string): Promise<Job> => {
+export const getJob = async (id: string) => {
   return await getJobTable().first().where({ id })
 }
 
@@ -33,8 +38,8 @@ export const createJob = async ({
 }: {
   companyId: string
   title: string
-  description: string | null
-}): Promise<Job> => {
+  description?: string | null
+}): Promise<JobEntity> => {
   const job = {
     id: generateId(),
     companyId,
@@ -52,7 +57,7 @@ export const createJob = async ({
 export const deleteJob = async (
   id: string,
   companyId: string
-): Promise<Job | null> => {
+): Promise<JobEntity | null> => {
   const job = await getJobTable().first().where({ id, companyId })
   if (!job) {
     return null
@@ -72,9 +77,9 @@ export const updateJob = async ({
 }: {
   id: string
   title: string
-  description: string | null
+  description?: string | null
   companyId: string
-}): Promise<Job | null> => {
+}): Promise<JobEntity | null> => {
   const job = await getJobTable().first().where({ id, companyId })
   if (!job) {
     return null

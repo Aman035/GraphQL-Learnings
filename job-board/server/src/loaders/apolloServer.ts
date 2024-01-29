@@ -1,9 +1,9 @@
 import { ApolloServer } from '@apollo/server'
 import { readFile } from 'node:fs/promises'
-import { resolvers } from '../api/graphql/resolvers'
+import { resolvers } from '../graphql/resolvers'
 
-export const apolloLoader = async (): Promise<ApolloServer> => {
-  const typeDefs = await readFile('./src/api/graphql/schema.graphql', 'utf-8')
+export const apolloLoader = async () => {
+  const typeDefs = await readFile('./src/graphql/schema.graphql', 'utf-8')
   const server = new ApolloServer({
     typeDefs,
     resolvers,

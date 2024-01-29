@@ -236,3 +236,11 @@
 - The PubSub class is used to publish and subscribe to events. ( Refer to `chat` project for an example ). Although it is not recommended to use this in production, since data is stored in memory and will be lost on server restart or issues when 1 has multiple servers. In such cases, one should use a pubsub service such as `Redis` or `AWS SNS` or `RabbitMQ` etc.
 - Context can be passed to subscriptions while setting up graphQL over ws ( Refer to `chat` project for an example )
 - [Using Subscriptions on Client Side with Apollo Client](https://www.apollographql.com/docs/react/data/subscriptions)
+
+#### **Using GraphQL with TS**
+
+- Specifying TS types for GraphQL typeDefs manually can be a bit tedious, often leading to errors and complexity.
+- [GraphQL Code Generator](https://graphql-code-generator.com/) can be used to generate types for resolvers, so we don't need to specify types for `_root`, `_args`, `_context` etc manually.
+- This often requires some config to match db results to graphql types. ( Refer to `schema.yml` in job-board` project for an example )
+- This guide was used to setup TypeScript with GraphQL Code Generator - [Link](https://www.apollographql.com/docs/apollo-server/workflow/generate-types/)
+- Also its good practice to .gitignore the generated types and regenerate them on every build.

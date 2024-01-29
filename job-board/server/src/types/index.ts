@@ -1,20 +1,27 @@
-export type Job = {
+import DataLoader from 'dataloader'
+
+export type JobEntity = {
   id: string
   companyId: string
   title: string
-  description: string | null
+  description?: string | null
   createdAt: string
 }
 
-export type Company = {
+export type CompanyEntity = {
   id: string
   name: string
-  description: string
+  description?: string | null
 }
 
-export type User = {
+export type UserEntity = {
   id: string
   companyId: string
   email: string
   password: string
+}
+
+export type ContextEntity = {
+  user?: UserEntity
+  companyLoader: DataLoader<string, CompanyEntity, string>
 }

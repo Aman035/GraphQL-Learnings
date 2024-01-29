@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql'
-import { getCompany } from '../../db/companies'
+import { getCompany } from '../db/companies'
 import {
   countJobs,
   createJob,
@@ -8,30 +8,26 @@ import {
   getJobs,
   getJobsByCompany,
   updateJob,
-} from '../../db/jobs'
-import { Company, Job, User } from '../../types'
-import DataLoader from 'dataloader'
+} from '../db/jobs'
+import { Resolvers } from './generated/schema'
 
-export const resolvers = {
+export const resolvers: Resolvers = {
   Query: {
-    job: async (_root: any, { id }: { id: string }) => {
+    job: async (_root, { id }) => {
       const job = await getJob(id)
       if (!job) {
-        notFoundError(`No job found with id: ${id}`)
+        throw notFoundError(`No job found with id: ${id}`)
       }
       return job
     },
-    company: async (_root: any, { id }: { id: string }) => {
+    company: async (_root, { id }) => {
       const company = await getCompany(id)
       if (!company) {
-        notFoundError(`No company found with id: ${id}`)
+        throw notFoundError(`No company found with id: ${id}`)
       }
       return company
     },
-    jobs: async (
-      _root: any,
-      { page, limit }: { page: number; limit: number }
-    ) => {
+    jobs: async (_root, { page, limit }) => {
       const MAX_LIMIT = 50
       if (limit > MAX_LIMIT) {
         badRequestError(`limit must be less than ${MAX_LIMIT}`)
@@ -46,12 +42,10 @@ export const resolvers = {
   },
   Mutation: {
     createJob: async (
-      _root: any,
-      {
-        input: { title, description },
-      }: { input: { title: string; description: string | null } },
+      _root,
+      { input: { title, description } },
       // Context
-      { user }: { user?: User }
+      { user }
     ) => {
       if (!user) {
         unAuthorizedError('Missing authentication')
@@ -64,11 +58,9 @@ export const resolvers = {
       return job
     },
     updateJob: async (
-      _root: any,
-      {
-        input: { id, title, description },
-      }: { input: { id: string; title: string; description: string | null } },
-      { user }: { user?: User }
+      _root,
+      { input: { id, title, description } },
+      { user }
     ) => {
       if (!user) {
         unAuthorizedError('Missing authentication')
@@ -85,11 +77,7 @@ export const resolvers = {
       }
       return job
     },
-    deleteJob: async (
-      _root: any,
-      { id }: { id: string },
-      { user }: { user?: User }
-    ) => {
+    deleteJob: async (_root, { id }, { user }) => {
       if (!user) {
         unAuthorizedError('Missing authentication')
       }
@@ -105,15 +93,12 @@ export const resolvers = {
    * @notice - This resolver will also override if date field was already present in the Job type.
    */
   Job: {
-    date: async (job: Job) => toIsoDate(job.createdAt),
-    company: async (
-      job: Job,
-      args: any,
-      { companyLoader }: { companyLoader: DataLoader<string, any, string> }
-    ) => await companyLoader.load(job.companyId),
+    date: async (job) => toIsoDate(job.createdAt),
+    company: async (job, args, { companyLoader }) =>
+      await companyLoader.load(job.companyId),
   },
   Company: {
-    jobs: async (company: Company) => getJobsByCompany(company.id),
+    jobs: async (company) => getJobsByCompany(company.id),
   },
 }
 

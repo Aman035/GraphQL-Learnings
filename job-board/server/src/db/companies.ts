@@ -1,10 +1,10 @@
 import DataLoader from 'dataloader'
 import { connection } from './connection'
-import { Company } from '../types'
+import { CompanyEntity } from '../types'
 
-const getCompanyTable = () => connection.table('company')
+const getCompanyTable = () => connection.table<CompanyEntity>('company')
 
-export const getCompany = async (id: string): Promise<Company> => {
+export const getCompany = async (id: string) => {
   return await getCompanyTable().first().where({ id })
 }
 
@@ -16,6 +16,8 @@ export const createCompanyLoader = async () => {
      * to match the order of the ids passed in. We need to make sure that the
      * companies are returned in the same order as the ids passed in.
      */
-    return ids.map((id) => companies.find((company) => company.id === id))
+    return ids.map((id) =>
+      companies.find((company) => company.id === id)
+    ) as CompanyEntity[]
   })
 }

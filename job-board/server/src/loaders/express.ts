@@ -8,12 +8,11 @@ import { ApolloServer } from '@apollo/server'
 import { authMiddleware } from '../api/middlewares/authMiddleware'
 import { getUser } from '../db/users'
 import { createCompanyLoader } from '../db/companies'
-import DataLoader from 'dataloader'
-import { User } from '../types'
+import { ContextEntity } from '../types'
 
 export const expressLoader = (
   app: Application,
-  apolloServer: ApolloServer
+  apolloServer: ApolloServer<ContextEntity>
 ): void => {
   /* Health Check endpoint */
   app.get('/status', (req: Request, res: Response) => {
@@ -79,10 +78,7 @@ export const expressLoader = (
          * @dev - CompanyLoader is created now for each graphql request, to avoid global caching of the data loader
          */
         const companyLoader = await createCompanyLoader()
-        const context: {
-          companyLoader: DataLoader<string, any, string>
-          user?: User
-        } = { companyLoader }
+        const context: ContextEntity = { companyLoader }
         if ((req as any).auth) {
           context.user = await getUser((req as any).auth.sub)
         }
