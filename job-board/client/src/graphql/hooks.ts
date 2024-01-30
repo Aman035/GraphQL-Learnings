@@ -19,14 +19,14 @@ export const useGetJobs = (page: number, limit: number) => {
   }
 }
 
-export const useGetJob = (id: string | undefined) => {
+export const useGetJob = (id: string) => {
   const { data, loading, error } = useQuery(getJobByIdQuery, {
     variables: { id },
   })
   return { job: data?.job, loading, error }
 }
 
-export const useGetCompany = (id: string | undefined) => {
+export const useGetCompany = (id: string) => {
   const { data, loading, error } = useQuery(getCompanyByIdQuery, {
     variables: { id },
   })
@@ -40,14 +40,16 @@ export const useCreateJob = () => {
     const { data } = await mutate({
       variables: { input: { title, description } },
       update: (cache, { data }) => {
-        cache.writeQuery({
-          query: getJobByIdQuery,
-          variables: { id: data.job.id },
-          data,
-        })
+        data &&
+          data.job &&
+          cache.writeQuery({
+            query: getJobByIdQuery,
+            variables: { id: data.job.id },
+            data,
+          })
       },
     })
-    return data.job
+    return data?.job
   }
 
   return { loading, createJob }

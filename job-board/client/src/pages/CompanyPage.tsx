@@ -4,12 +4,12 @@ import { useGetCompany } from '../graphql/hooks'
 
 const CompanyPage: React.FC = () => {
   const { companyId } = useParams()
-  const { company, loading, error } = useGetCompany(companyId)
+  const { company, loading, error } = useGetCompany(companyId as string)
 
   if (loading) {
     return <div>Loading...</div>
   }
-  if (error) {
+  if (error || !company) {
     return <div className="has-text-danger">Data Unavailable</div>
   }
   return (

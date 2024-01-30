@@ -1,7 +1,6 @@
-import { gql } from '@apollo/client'
-import { jobDetail } from './fragments'
+import { gql } from '../__generated__'
 
-export const getJobsQuery = gql`
+export const getJobsQuery = gql(/* GraphQL */ `
   query getJobs($page: Int = 1, $limit: Int = 10) {
     jobs(page: $page, limit: $limit) {
       items {
@@ -16,18 +15,17 @@ export const getJobsQuery = gql`
       totalCount
     }
   }
-`
+`)
 
-export const getJobByIdQuery = gql`
+export const getJobByIdQuery = gql(/* GraphQL */ `
   query JobById($id: ID!) {
     job(id: $id) {
       ...JobFragment
     }
   }
-  ${jobDetail}
-`
+`)
 
-export const getCompanyByIdQuery = gql`
+export const getCompanyByIdQuery = gql(/* GraphQL */ `
   query CompanyById($id: ID!) {
     company(id: $id) {
       id
@@ -40,4 +38,4 @@ export const getCompanyByIdQuery = gql`
       }
     }
   }
-`
+`)

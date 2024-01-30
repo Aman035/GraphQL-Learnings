@@ -7,7 +7,7 @@ export type JobEntity = {
   id: string
   title: string
   date: string
-  company: {
+  company?: {
     name: string
   }
 }

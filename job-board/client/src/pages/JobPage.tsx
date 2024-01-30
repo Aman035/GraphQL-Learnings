@@ -5,12 +5,12 @@ import { useGetJob } from '../graphql/hooks'
 
 const JobPage: React.FC = () => {
   const { jobId } = useParams()
-  const { job, loading, error } = useGetJob(jobId)
+  const { job, loading, error } = useGetJob(jobId as string)
 
   if (loading) {
     return <div>Loading...</div>
   }
-  if (error) {
+  if (error || !job) {
     return <div className="has-text-danger">Data Unavailable</div>
   }
   return (

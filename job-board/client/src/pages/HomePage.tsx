@@ -10,7 +10,7 @@ const HomePage: React.FC = () => {
   if (loading) {
     return <div>Loading...</div>
   }
-  if (error) {
+  if (error || !jobs) {
     return <div className="has-text-danger">Data unavailable</div>
   }
 
