@@ -241,7 +241,10 @@
 
 - Specifying TS types for GraphQL typeDefs manually can be a bit tedious, often leading to errors and complexity.
 - [GraphQL Code Generator](https://graphql-code-generator.com/) can be used to generate types for resolvers, so we don't need to specify types for `_root`, `_args`, `_context` etc manually.
-- This often requires some config to match db results to graphql types. ( Refer to `schema.yml` in job-board` project for an example )
-- This guide was used to setup TypeScript with GraphQL Code Generator - [Link](https://www.apollographql.com/docs/apollo-server/workflow/generate-types/)
-- Also its good practice to .gitignore the generated types and regenerate them on every build.
-- To make sure that the generated types are correct, one can use `graphql-codegen --config codegen.yml --watch` to watch for changes on dev server
+- This type generation can be done on server side or client side. ( Refer to `job-board` project for an example )
+- [Guide of Server-Side Type Generation](https://www.apollographql.com/docs/apollo-server/workflow/generate-types/)
+- [Guide of Client-Side Type Generation](https://www.apollographql.com/docs/react/development-testing/static-typing/)
+- It is a good practice to add generated types to `.gitignore`.
+- These types should be generated at each build. Also at dev modes, these types should be generated on watch mode to avoid manual generation. ( Refer to `scripts` in `package.json` of `job-board` project for an example )
+- Often times some config to match db results to graphql types. ( Refer to `schema.yml` in `job-board\server` project for an example )
+- Client-preset has fragment-masking enabled by default as mentioned [here](https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#fragment-masking). This can be useful to avoid leaks but can also be disabled if required.
