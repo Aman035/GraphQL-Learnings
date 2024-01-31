@@ -248,3 +248,9 @@
 - These types should be generated at each build. Also at dev modes, these types should be generated on watch mode to avoid manual generation. ( Refer to `scripts` in `package.json` of `job-board` project for an example )
 - Often times some config to match db results to graphql types. ( Refer to `schema.yml` in `job-board\server` project for an example )
 - Client-preset has fragment-masking enabled by default as mentioned [here](https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#fragment-masking). This can be useful to avoid leaks but can also be disabled if required.
+
+#### **Best Practices**
+
+- [Best Practices](https://graphql.org/learn/best-practices/)
+- While building Production projects, business logic and authorization logic should be handled at business layer and not at GraphQL resolvers. Ie a fn can be used by REST / GraphQL / gRPC etc, so authorization should be at fn level and not at resolver level.
+- Usually in cursor based pagination, node and edges are returned. Node contains the actual data and edges contain the cursor. [More for info](https://graphql.org/learn/pagination/#pagination-and-edges)
